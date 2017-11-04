@@ -1,0 +1,26 @@
+{
+  "name": "replacementsbot",
+  "version": "1.0.0",
+  "description": "My telegram bot",
+  "main": "bot.js",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "express": "^4.16.2",
+    "jade": "^1.11.0",
+    "node-telegram-bot-api": "^0.29.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EtherDrake/TeleBot2.git"
+  },
+  "author": "Viktor Kudriavtsev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EtherDrake/TeleBot2/issues"
+  },
+  "homepage": "https://github.com/EtherDrake/TeleBot2#readme"
+}
