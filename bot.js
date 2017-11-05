@@ -53,6 +53,6 @@ var TelegramBot = require('node-telegram-bot-api');
 
     bot.onText(/^\D\D-\d\d\d$/, function(msg, match) {
       let fromId = msg.from.id;
-      let group = match[0];
+      let group = match[0].toUpperCase();
       let responce = getReplacements(group, function(err, msg){bot.sendMessage(fromId, msg)});
     });
