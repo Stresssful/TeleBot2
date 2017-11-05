@@ -11,6 +11,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "scripts": {
+    "start": "node bot.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/EtherDrake/TeleBot2.git"
@@ -20,5 +23,6 @@
   "bugs": {
     "url": "https://github.com/EtherDrake/TeleBot2/issues"
   },
+
   "homepage": "https://github.com/EtherDrake/TeleBot2#readme"
 }
