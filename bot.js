@@ -1,6 +1,7 @@
-var TelegramBot = require('node-telegram-bot-api');
+
 var request = require('request');
 var cheerio = require('cheerio');
+var TelegramBot = require('node-telegram-bot-api');
 
   function getReplacements(GROUP, callback)
   {
@@ -49,23 +50,9 @@ var cheerio = require('cheerio');
     // Включить опрос сервера
     var bot = new TelegramBot(token, {polling: true});
 
-    // Написать мне ... (/echo Hello World! - пришлет сообщение с этим приветствием.)
-    //bot.onText(/\/echo (.+)/, function (msg, match) {
-    //  var fromId = msg.from.id;
-    //  var resp = match[1];
-    //  bot.sendMessage(fromId, resp);
-    //});
 
-    bot.onText(/\/replacements (.+)/, function(msg, match) {
+    bot.onText(/^\D\D-\d\d\d$/, function(msg, match) {
       let fromId = msg.from.id;
       let group = match[1];
       let responce = getReplacements(group, function(err, msg){bot.sendMessage(fromId, msg)});
     });
-
-    // Простая команда без параметров.
-    //bot.on('message', function (msg) {
-    //  var chatId = msg.chat.id;
-      // Фотография может быть: путь к файлу, поток(stream) или параметр file_id
-    //  var photo = 'cats.png';
-    //  bot.sendPhoto(chatId, photo, {caption: 'Милые котята'});
-    //});
