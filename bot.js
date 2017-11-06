@@ -25,7 +25,7 @@ var TelegramBot = require('node-telegram-bot-api');
           {
             anouncements+="\t"+anouncementsRaw.eq(i).text()+"\n"; //Розбиття оголошень по рядках
           }
-          let output=__GROUP__+":\n"+date+"\n"+day+"\n"+anouncements+"\n"+"Заміни:\n";
+          let output=GROUP+":\n"+date+"\n"+day+"\n"+anouncements+"\n"+"Заміни:\n";
 
 
           let prevGroup='';
@@ -42,13 +42,13 @@ var TelegramBot = require('node-telegram-bot-api');
             if(group.includes("-")) //Якщо клітинка з групою не порожня -- там буде -
             {
               prevGroup=group;
-              if(group==__GROUP__)
+              if(group==GROUP)
               {
                 output+="\t"+pair+"\t"+subject+"\t\t"+teacher+"\t"+room+"\n";
                 empty=false;
               }         
             }
-            else if(!group.includes("-") && prevGroup==__GROUP__)         
+            else if(!group.includes("-") && prevGroup==GROUP)         
             {
               output+="\t"+pair+"\t"+subject+"\t\t"+teacher+"\t"+room+"\n";
             }         

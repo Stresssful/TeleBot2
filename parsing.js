@@ -4,7 +4,7 @@ var PORT = 8007;
 //Загружаем страницу
 
 var test;
-var __GROUP__ = process.argv[2];
+var GROUP = process.argv[2];
 
 request({uri:'http://hpk.edu.ua/replacements', method:'GET', encoding:'utf-8'},
     function (err, res, page) {
@@ -29,7 +29,7 @@ request({uri:'http://hpk.edu.ua/replacements', method:'GET', encoding:'utf-8'},
         //console.log(table.text());
 
 
-        let output=__GROUP__+":\n"+date+"\n"+day+"\n"+anouncements+"\n"+"Заміни:\n";
+        let output=GROUP+":\n"+date+"\n"+day+"\n"+anouncements+"\n"+"Заміни:\n";
         let prevGroup='';
         let empty=true;
         for(let i=1; i<table.length; i++)
@@ -44,14 +44,14 @@ request({uri:'http://hpk.edu.ua/replacements', method:'GET', encoding:'utf-8'},
         	if(group.includes("-"))
         	{
         		prevGroup=group;
-        		if(group==__GROUP__)
+        		if(group==GROUP)
         		{
         			//console.log(table.eq(i).text());
         			output+="\t"+pair+"\t"+subject+"\t\t"+teacher+"\t"+room+"\n";
         			empty=false;
         		}     		
         	}
-        	else if(!group.includes("-") && prevGroup==__GROUP__)        	
+        	else if(!group.includes("-") && prevGroup==GROUP)        	
         	{
         		//console.log(table.eq(i).text());
         		output+="\t"+pair+"\t"+subject+"\t\t"+teacher+"\t"+room+"\n";
