@@ -10,38 +10,57 @@ request({uri:'http://hpk.edu.ua/replacements', method:'GET', encoding:'utf-8'},
     function (err, res, page) {
         //Передаём страницу в cheerio
         let $=cheerio.load(page);
-        //Идём по DOM-дереву обычными CSS-селекторами
-        test=$('div.news-body > table > tbody').children();
-        let output=__GROUP__+":\n";
+        let content=$('div.news-body').children();
+        //let dateDay=$('div.news-body > p');
+        let date=content.eq(0).text();
+        let day=content.eq(1).text();
+        let table=$('div.news-body > table > tbody').children();
+        //console.log(date);
+        //console.log(day);
+        let anouncementsRaw=$('[colspan=6]');
+        let anouncements;
+        if(anouncementsRaw.length>0)anouncements="Оголошення:\n";
+        else anouncements="Оголошень немає\n";
+        for(let i=0;i<anouncementsRaw.length; i++)
+        {
+        	anouncements+="\t"+anouncementsRaw.eq(i).text()+"\n";
+        }
+        //console.log(anouncements);
+        //console.log(table.text());
+
+
+        let output=__GROUP__+":\n"+date+"\n"+day+"\n"+anouncements+"\n"+"Заміни:\n";
         let prevGroup='';
         let empty=true;
-        for(let i=1; i<test.length; i++)
+        for(let i=1; i<table.length; i++)
         {
-        	let group=test.eq(i).children().eq(0).text();
-        	let pair=test.eq(i).children().eq(1).text();
-        	//let pair=test.eq(i).children().eq(2).text();
-        	let subject=test.eq(i).children().eq(3).text();
-        	let teacher=test.eq(i).children().eq(4).text();
-        	let room=test.eq(i).children().eq(5).text();
+        	let group=table.eq(i).children().eq(0).text();
+        	let pair=table.eq(i).children().eq(1).text();
+        	//let pair=table.eq(i).children().eq(2).text();
+        	let subject=table.eq(i).children().eq(3).text();
+        	let teacher=table.eq(i).children().eq(4).text();
+        	let room=table.eq(i).children().eq(5).text();
 
         	if(group.includes("-"))
         	{
         		prevGroup=group;
         		if(group==__GROUP__)
         		{
-        			//console.log(test.eq(i).text());
+        			//console.log(table.eq(i).text());
         			output+="\t"+pair+"\t"+subject+"\t\t"+teacher+"\t"+room+"\n";
         			empty=false;
         		}     		
         	}
         	else if(!group.includes("-") && prevGroup==__GROUP__)        	
         	{
-        		//console.log(test.eq(i).text());
+        		//console.log(table.eq(i).text());
         		output+="\t"+pair+"\t"+subject+"\t\t"+teacher+"\t"+room+"\n";
         	}        	
         }
+        
         if(empty) output+="Замін немає";
         console.log(output);
+        
 });    
 
 
