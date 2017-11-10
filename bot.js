@@ -92,9 +92,11 @@ var db = monk('ether:herokuDB@ds249025.mlab.com:49025/heroku_26kgq0gk');
       { 
         getReplacements(group, function(err, msg){bot.sendMessage(fromId, msg)});
       }
-      else 
+      else
+      { 
         addToBase(msg.from.id, group, msg.from.username);
         getReplacements(group, function(err, msg){bot.sendMessage(fromId, msg)});
+      }
     });
 
     function addToBase(telegramID, group, name)
