@@ -1,7 +1,9 @@
-
 var request = require('request');
 var cheerio = require('cheerio');
 var TelegramBot = require('node-telegram-bot-api');
+var monk = require('monk');
+
+var db = monk('ether:herokuDB@ds249025.mlab.com:49025/heroku_26kgq0gk');
 
   function getReplacements(GROUP, callback)
   {
@@ -68,5 +70,48 @@ var TelegramBot = require('node-telegram-bot-api');
     bot.onText(/^\D\D-\d\d\d$/, function(msg, match) { // \D - буква; \d - цифра
       let fromId = msg.from.id;
       let group = match[0].toUpperCase();
-      let responce = getReplacements(group, function(err, msg){bot.sendMessage(fromId, msg)});
+
+      let options = {
+      reply_markup: JSON.stringify(
+      {
+          inline_keyboard: [
+            [{ text: 'Переглянути заміни', callback_data: group+":show" }],
+            [{ text: 'Відслідковувати групу', callback_data: group+":subscribe" }],            
+          ]
+        })
+      };
+      bot.sendMessage(fromId, group, options);
     });
+
+    bot.on('callback_query', function (msg) {
+      let query = msg.data.split(':');
+      let group = query[0];
+      let action = query[1];
+      let fromId=msg.from.id;
+      if (action=='show')
+      { 
+        getReplacements(group, function(err, msg){bot.sendMessage(fromId, msg)});
+      }
+      else 
+        addToBase(msg.from.id, group, msg.from.username);
+        getReplacements(group, function(err, msg){bot.sendMessage(fromId, msg)});
+    });
+
+    function addToBase(telegramID, group, name)
+    {
+      let collection = db.get('users');
+      collection.remove({ id: telegramID });
+
+      collection.insert(
+      { 
+        id: telegramID, 
+        Group: group,
+        Name: name
+      });
+    }
+
+    function unsubscribe(telegramID)
+    {
+      let collection = db.get('users');
+      collection.remove({ id: telegramID });
+    }
