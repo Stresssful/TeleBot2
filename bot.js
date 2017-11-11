@@ -83,6 +83,22 @@ var db = monk('ether:herokuDB@ds249025.mlab.com:49025/heroku_26kgq0gk');
       bot.sendMessage(fromId, group, options);
     });
 
+    bot.onText(/\/my/, function(msg, match) { 
+      let fromId = msg.from.id;
+      let collection = db.get('users');
+      collection.findOne({ id: fromId }, function(err, doc)
+      {
+          if (err) throw err;
+          let group=doc.Group;
+          getReplacements(group, function(err, msg){bot.sendMessage(fromId, msg)});
+      });
+    });
+
+    bot.onText(/\/remove/, function(msg, match) { 
+      let fromId = msg.from.id;
+      unsubscribe(fromId);      
+    });
+
     bot.on('callback_query', function (msg) {
       let query = msg.data.split(':');
       let group = query[0];
@@ -102,7 +118,7 @@ var db = monk('ether:herokuDB@ds249025.mlab.com:49025/heroku_26kgq0gk');
     function addToBase(telegramID, group, name)
     {
       let collection = db.get('users');
-      collection.remove({ id: telegramID });
+      //collection.remove({ id: telegramID });
 
       collection.insert(
       { 

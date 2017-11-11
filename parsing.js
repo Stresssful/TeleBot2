@@ -4,7 +4,7 @@ var PORT = 8007;
 //Загружаем страницу
 
 var test;
-var GROUP = process.argv[2];
+/*var GROUP = process.argv[2];
 
 request({uri:'http://hpk.edu.ua/replacements', method:'GET', encoding:'utf-8'},
     function (err, res, page) {
@@ -62,7 +62,18 @@ request({uri:'http://hpk.edu.ua/replacements', method:'GET', encoding:'utf-8'},
         console.log(output);
         
 });    
+*/
 
+var monk = require('monk');
+var db = monk('ether:herokuDB@ds249025.mlab.com:49025/heroku_26kgq0gk');
+var collection = db.get('users');
+var ID=310694905;
+
+collection.findOne({ id: ID }, function(err, doc)
+    {
+        if (err) throw err;
+        console.log(doc.Name);
+    });
 
 /*
 	0 - Група
