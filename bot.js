@@ -7,13 +7,13 @@ var db = monk('ether:herokuDB@ds249025.mlab.com:49025/heroku_26kgq0gk');
 var users = db.get('users'); //таблиця користувачів
 var update = db.get('last_update'); //останній апдейт
 
-var   helpText='Привіт! Я бот який може відслідковувати заміни для студентів ХПК. Просто напиши мені назву групи про заміни якої ти хочеш дізнатись.';
+var   helpText='Привіт! Я бот, який може відслідковувати заміни для студентів ХПК. Просто напиши мені назву групи, про заміни якої ти хочеш дізнатись.';
       helpText+='\n\n';
-      helpText+='Якщо ти просто хочеш переглянути заміни на цю групу - натисни кнопку "Переглянути заміни".';
+      //helpText+='Якщо ти просто хочеш переглянути заміни на цю групу - натисни кнопку "Переглянути заміни".';
+      //helpText+='\n\n';
+      helpText+='Якщо ж ти хочеш отримувати повідомлення кожен раз, коли на сайті ХПК виходять заміни - натисни на кнопку "Відслідковувати групу".';
       helpText+='\n\n';
-      helpText+='Якщо ж ти хочеш отримувати повідомлення кожен раз коли на сайті ХПК виходять заміни - натисни на кнопку "Відслідковувати групу".';
-      helpText+='\n\n';
-      helpText+='Також, у мене є деякі команди:\n/my - Переглянути мої заміни;\n/remove - Не відслідковувати групу;\n/help - Переглянути це повідомлення з інструкцією.';
+      helpText+='Також у мене є деякі команди:\n/my - Переглянути мої заміни;\n/remove - Не відслідковувати групу;\n/help - Переглянути це повідомлення з інструкцією.';
       helpText+='\nЗ питаннями та пропозиціями звертатись до @EtherDrake.'
 
 var token = '473584184:AAGQGkdSmbK_CaI9iy5mUURIMhb25MT20Aw';// Устанавливаем токен
@@ -164,18 +164,71 @@ setInterval(intervalFunc, 900000);// Перевірка наявності он�
 
     bot.onText(/^\D\D-\d\d\d$/, function(msg, match) { // \D - буква; \d - цифра
       let fromId = msg.from.id;
-      let group = match[0].toUpperCase();
+      let Group = match[0].toUpperCase();
 
       let options = {
       reply_markup: JSON.stringify(
       {
           inline_keyboard: [
-            [{ text: 'Переглянути заміни', callback_data: group+":show" }],
-            [{ text: 'Відслідковувати групу', callback_data: group+":subscribe" }],            
+            //[{ text: 'Переглянути заміни', callback_data: group+":show" }],
+            [{ text: 'Відслідковувати групу', callback_data: Group+":subscribe" }],            
           ]
         })
       };
-      bot.sendMessage(fromId, group, options);
+
+      request({uri:'http://hpk.edu.ua/replacements', method:'GET', encoding:'utf-8'},
+      function (err, res, page) {        
+          let $=cheerio.load(page); 
+          let content=$('div.news-body').children();
+
+          let date=content.eq(0).text(); //Дата
+          let day=content.eq(1).text(); //Чисельник\знаменник
+
+          let table=$('div.news-body > table > tbody').children(); //Заміни
+
+          let anouncementsRaw=$('[colspan=6]'); //Всі оголошення
+          let anouncements;
+          if(anouncementsRaw.length>0)anouncements="Оголошення:\n";
+          else anouncements="Оголошень немає\n";
+
+          for(let i=0;i<anouncementsRaw.length; i++)
+          {
+            anouncements+="\t"+anouncementsRaw.eq(i).text()+"\n"; //Розбиття оголошень по рядках
+          }
+          let output=Group+":\n"+date+"\n"+day+"\n"+anouncements+"\n"+"Заміни:\n";
+
+
+          let prevGroup='';
+          let empty=true;
+          for(let i=1; i<table.length; i++)
+          {
+            let group=table.eq(i).children().eq(0).text(); //0-Група
+            let pair=table.eq(i).children().eq(1).text(); //1-Пара
+            //2-Кого замінили
+            let subject=table.eq(i).children().eq(3).text(); //3-Предмет
+            let teacher=table.eq(i).children().eq(4).text(); //4-Викладач
+            let room=table.eq(i).children().eq(5).text(); //5-Аудиторія
+
+            if(group.includes("-")) //Якщо клітинка з групою не порожня -- там буде -
+            {
+              prevGroup=group;
+              if(group==Group)
+              {
+                output+="\t"+pair+"\t"+subject+"\t\t"+teacher+"\t"+room+"\n";
+                empty=false;
+              }         
+            }
+            else if(!group.includes("-") && prevGroup==Group)         
+            {
+              output+="\t"+pair+"\t"+subject+"\t\t"+teacher+"\t"+room+"\n";
+            }         
+          }
+          
+          if(empty) output+="Замін немає";
+          bot.sendMessage(fromId, output, options);
+        });
+
+      
     });
 
     bot.onText(/\/my/, function(msg, match) { //команда \my
@@ -194,7 +247,8 @@ setInterval(intervalFunc, 900000);// Перевірка наявності он�
 
     bot.onText(/\/remove/, function(msg, match) { //команда \remove
       let fromId = msg.from.id;
-      users.remove({ id:fromId});      
+      users.remove({ id:fromId});
+      bot.sendMessage(fromId,"Ви не відслідковуєте жодну групу.");
     });
 
     bot.onText(/\/start/, function(msg, match) { //команда \start
@@ -216,12 +270,13 @@ setInterval(intervalFunc, 900000);// Перевірка наявності он�
       let fromId=msg.from.id;
       if (action=='show')
       { 
-        getReplacements(group, function(err, msg){bot.sendMessage(fromId, msg)});
+        //getReplacements(group, function(err, msg){bot.sendMessage(fromId, msg)});
       }
       else
       { 
         addToBase(msg.from.id, group, msg.from.username);
-        getReplacements(group, function(err, msg){bot.sendMessage(fromId, msg)});
+        //getReplacements(group, function(err, msg){bot.sendMessage(fromId, msg)});
+        bot.sendMessage(fromId, "Ви відслідковуєте групу "+group+".");
       }
     });
 
