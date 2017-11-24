@@ -129,6 +129,16 @@ setInterval(intervalFunc, 900000);// Перевірка наявності он�
 
       function intervalFunc() //функція для таймера
       { 
+        let options = {
+        reply_markup: JSON.stringify(
+        {
+            inline_keyboard: [
+              //[{ text: 'Переглянути заміни', callback_data: group+":show" }],
+              //[{ text: 'Відслідковувати групу', callback_data: Group+":subscribe" }],
+              [{ text: 'Поширити друзям', switch_inline_query: " - Бот для відслідковування замін в розкладі ХПК." }],             
+            ]
+          })
+        };
         update.find({},function(err,last)
         {
             if (err) throw err;
@@ -154,7 +164,7 @@ setInterval(intervalFunc, 900000);// Перевірка наявності он�
                       if (err) throw err;
                       for(let i=0;i<doc.length;i++)
                       {
-                        getReplacementsFromLoaded(content,tabl,anoun,function(err, msg){bot.sendMessage(doc[i].id, msg)},doc[i].Group)
+                        getReplacementsFromLoaded(content,tabl,anoun,function(err, msg){bot.sendMessage(doc[i].id, msg, options)},doc[i].Group)
                       }
                   });
                 }
@@ -234,6 +244,16 @@ setInterval(intervalFunc, 900000);// Перевірка наявності он�
 
     bot.onText(/\/my/, function(msg, match) { //команда \my
       let fromId = msg.from.id;
+      let options = {
+        reply_markup: JSON.stringify(
+        {
+            inline_keyboard: [
+              //[{ text: 'Переглянути заміни', callback_data: group+":show" }],
+              //[{ text: 'Відслідковувати групу', callback_data: Group+":subscribe" }],
+              [{ text: 'Поширити друзям', switch_inline_query: " - Бот для відслідковування замін в розкладі ХПК." }],             
+            ]
+          })
+        };
       users.findOne({ id: fromId }, function(err, doc)
       {
           if (err) throw err;
@@ -241,7 +261,7 @@ setInterval(intervalFunc, 900000);// Перевірка наявності он�
           else
           {
             let group=doc.Group;
-            getReplacements(group, function(err, msg){bot.sendMessage(fromId, msg)});
+            getReplacements(group, function(err, msg){bot.sendMessage(fromId, msg, options)});
           }
       });
     });
