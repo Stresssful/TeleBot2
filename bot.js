@@ -16,17 +16,21 @@ var   helpText='Привіт! Я бот, який може відслідков�
       helpText+='Також у мене є деякі команди:\n/my - Переглянути мої заміни;\n/remove - Не відслідковувати групу;\n/help - Переглянути це повідомлення з інструкцією.';
       helpText+='\nЗ питаннями та пропозиціями звертатись до @EtherDrake.'
 
-var token = '473584184:AAGQGkdSmbK_CaI9iy5mUURIMhb25MT20Aw';// Устанавливаем токен
+//var token = '473584184:AAGQGkdSmbK_CaI9iy5mUURIMhb25MT20Aw';// Устанавливаем токен
+var token = '418440998:AAGpggVT2H3_4am1qZmwoNaQ5BEUS6-UEzg';// Устанавливаем токен (DEVELOP)
 var bot = new TelegramBot(token, {polling: true});// Включить опрос сервера
-setInterval(intervalFunc, 900000);// Перевірка наявності оновлень (900000 - 15 хв, 3600000 - 1 год)
+//setInterval(intervalFunc, 900000);// Перевірка наявності оновлень (900000 - 15 хв, 3600000 - 1 год) 
 
 
 
   function getReplacements(GROUP, callback)
   {
-    
+    	
       request({uri:'http://hpk.edu.ua/replacements', method:'GET', encoding:'utf-8'},
-      function (err, res, page) {        
+      function (err, res, page) {  
+
+      	  let formattedGroup=GROUP.split('-');
+
           let $=cheerio.load(page); 
           let content=$('div.news-body').children();
 
@@ -61,13 +65,13 @@ setInterval(intervalFunc, 900000);// Перевірка наявності он�
             if(group.includes("-")) //Якщо клітинка з групою не порожня -- там буде -
             {
               prevGroup=group;
-              if(group==GROUP)
+              if(group.includes(formattedGroup[0]) && group.includes(formattedGroup[1]))
               {
                 output+="\t"+pair+"\t"+subject+"\t\t"+teacher+"\t"+room+"\n";
                 empty=false;
               }         
             }
-            else if(!group.includes("-") && prevGroup==GROUP)         
+            else if(!group.includes("-") && prevGroup.includes(formattedGroup[0]) && prevGroup.includes(formattedGroup[1]))         
             {
               output+="\t"+pair+"\t"+subject+"\t\t"+teacher+"\t"+room+"\n";
             }         
@@ -80,6 +84,8 @@ setInterval(intervalFunc, 900000);// Перевірка наявності он�
 
     function getReplacementsFromLoaded(content,tabl,anoun,callback,GROUP) //Заміни з вже завантаженої сторінки
     {
+    	  let formattedGroup=GROUP.split('-');
+
           let date=content.eq(0).text(); //Дата
           let day=content.eq(1).text(); //Чисельник\знаменник
 
@@ -111,13 +117,13 @@ setInterval(intervalFunc, 900000);// Перевірка наявності он�
             if(group.includes("-")) //Якщо клітинка з групою не порожня -- там буде -
             {
               prevGroup=group;
-              if(group==GROUP)
+              if(group.includes(formattedGroup[0]) && group.includes(formattedGroup[1]))
               {
                 output+="\t"+pair+"\t"+subject+"\t\t"+teacher+"\t"+room+"\n";
                 empty=false;
               }         
             }
-            else if(!group.includes("-") && prevGroup==GROUP)         
+            else if(!group.includes("-") && prevGroup.includes(formattedGroup[0]) && prevGroup.includes(formattedGroup[1]))         
             {
               output+="\t"+pair+"\t"+subject+"\t\t"+teacher+"\t"+room+"\n";
             }         
@@ -175,6 +181,7 @@ setInterval(intervalFunc, 900000);// Перевірка наявності он�
     bot.onText(/^\D\D-\d\d\d$/, function(msg, match) { // \D - буква; \d - цифра
       let fromId = msg.from.id;
       let Group = match[0].toUpperCase();
+      let formattedGroup=Group.split('-');
 
       let options = {
       reply_markup: JSON.stringify(
@@ -223,13 +230,13 @@ setInterval(intervalFunc, 900000);// Перевірка наявності он�
             if(group.includes("-")) //Якщо клітинка з групою не порожня -- там буде -
             {
               prevGroup=group;
-              if(group==Group)
+              if(group.includes(formattedGroup[0]) && group.includes(formattedGroup[1]))
               {
                 output+="\t"+pair+"\t"+subject+"\t\t"+teacher+"\t"+room+"\n";
                 empty=false;
               }         
             }
-            else if(!group.includes("-") && prevGroup==Group)         
+            else if(!group.includes("-") && prevGroup.includes(formattedGroup[0]) && prevGroup.includes(formattedGroup[1]))         
             {
               output+="\t"+pair+"\t"+subject+"\t\t"+teacher+"\t"+room+"\n";
             }         
@@ -282,6 +289,14 @@ setInterval(intervalFunc, 900000);// Перевірка наявності он�
       let fromId = msg.from.id;
       let text=helpText;
       bot.sendMessage(fromId, text);
+    });
+
+    bot.onText(/\/count/, function(msg, match) { //команда \count
+      let fromId = msg.from.id;
+      users.count({}, function (err, count) {
+      	if (err) throw err;
+  		bot.sendMessage(fromId,"Нас вже "+count+"!");
+	  });
     });
 
     bot.on('callback_query', function (msg) { //обробка кнопок відслідкувати або переглянути заміну
