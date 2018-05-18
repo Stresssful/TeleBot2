@@ -4,7 +4,7 @@ var TelegramBot = require('node-telegram-bot-api');
 var monk = require('monk');
 
 var db = monk('ether:herokuDB@ds249025.mlab.com:49025/heroku_26kgq0gk'); //База даних
-//var db = monk('main:root@ds161148.mlab.com:61148/heroku_tqh5hdjz'); ////База даних (DEVELOP)
+//var db = monk('main:root@ds161148.mlab.com:61148/heroku_tqh5hdjz'); //База даних (DEVELOP)
 var users = db.get('users'); //таблиця користувачів
 var update = db.get('last_update'); //останній апдейт
 
@@ -17,8 +17,8 @@ var   helpText='Привіт! Я бот, який може відслідков�
       helpText+='Також у мене є деякі команди:\n/my - Переглянути мої заміни;\n/remove - Не відслідковувати групу;\n/help - Переглянути це повідомлення з інструкцією.';
       helpText+='\nЗ питаннями та пропозиціями звертатись до @EtherDrake.'
 
-var token = '473584184:AAGQGkdSmbK_CaI9iy5mUURIMhb25MT20Aw';// Устанавливаем токен
-//var token = '418440998:AAGpggVT2H3_4am1qZmwoNaQ5BEUS6-UEzg';// Устанавливаем токен (DEVELOP)
+var token = '473584184:AAGQGkdSmbK_CaI9iy5mUURIMhb25MT20Aw'; // Устанавливаем токен
+//var token = '418440998:AAGpggVT2H3_4am1qZmwoNaQ5BEUS6-UEzg'; // Устанавливаем токен (DEVELOP)
 var bot = new TelegramBot(token, {polling: true});// Включить опрос сервера
 setInterval(intervalFunc, 900000);// Перевірка наявності оновлень (900000 - 15 хв, 3600000 - 1 год) 
 
@@ -102,8 +102,6 @@ setInterval(intervalFunc, 900000);// Перевірка наявності он�
           let anouncementsRaw=anoun; //Всі оголошення
           let anouncements;
           let anouncementsTop=content.eq(2).text(); //Оголошення (за межами таблиці)
-
-          let table=$('div.news-body > table > tbody').children(); //Заміни
 
           let anouncementsRaw=$('[colspan=6]'); //Всі оголошення
           let anouncements;
