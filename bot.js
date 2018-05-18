@@ -20,9 +20,9 @@ var   helpText='Привіт! Я бот, який може відслідков�
 var token = '473584184:AAGQGkdSmbK_CaI9iy5mUURIMhb25MT20Aw'; // Устанавливаем токен
 //var token = '418440998:AAGpggVT2H3_4am1qZmwoNaQ5BEUS6-UEzg'; // Устанавливаем токен (DEVELOP)
 var bot = new TelegramBot(token, {polling: true});// Включить опрос сервера
-setInterval(intervalFunc, 900000);// Перевірка наявності оновлень (900000 - 15 хв, 3600000 - 1 год) 
+//setInterval(intervalFunc, 900000);// Перевірка наявності оновлень (900000 - 15 хв, 3600000 - 1 год) 
 
-//setInterval(intervalFunc, 5000); //Перевірка наявності оновлень (DEVELOP)
+setInterval(intervalFunc, 5000); //Перевірка наявності оновлень (DEVELOP)
 //let isScheduledFarewell = true;
 //let dateOfFinishing=new Date(2018, 03, 15); //DEVELOP
 //let dateOfFinishing=new Date(2018, 05, 1);
@@ -103,9 +103,7 @@ setInterval(intervalFunc, 900000);// Перевірка наявності он�
           let anouncements;
           let anouncementsTop=content.eq(2).text(); //Оголошення (за межами таблиці)
 
-          let anouncementsRaw=$('[colspan=6]'); //Всі оголошення
-          let anouncements;
-          if(anouncementsRaw.length>0 || anouncementsTop.length>0)anouncements="Оголошення:\n";
+          if(anouncementsRaw.length>0 || anouncementsTop.length>0)anouncements="Оголошення:\n"+anouncementsTop;
           else anouncements="Оголошень немає\n";
 
           anouncements+=anouncementsTop;
