@@ -3,7 +3,8 @@ var cheerio = require('cheerio');
 var TelegramBot = require('node-telegram-bot-api');
 var monk = require('monk');
 
-var db = monk('ether:herokuDB@ds249025.mlab.com:49025/heroku_26kgq0gk');
+var db = monk('ether:herokuDB@ds249025.mlab.com:49025/heroku_26kgq0gk'); //База даних
+//var db = monk('main:root@ds161148.mlab.com:61148/heroku_tqh5hdjz'); ////База даних (DEVELOP)
 var users = db.get('users'); //таблиця користувачів
 var update = db.get('last_update'); //останній апдейт
 
@@ -19,8 +20,12 @@ var   helpText='Привіт! Я бот, який може відслідков�
 var token = '473584184:AAGQGkdSmbK_CaI9iy5mUURIMhb25MT20Aw';// Устанавливаем токен
 //var token = '418440998:AAGpggVT2H3_4am1qZmwoNaQ5BEUS6-UEzg';// Устанавливаем токен (DEVELOP)
 var bot = new TelegramBot(token, {polling: true});// Включить опрос сервера
-//setInterval(intervalFunc, 900000);// Перевірка наявності оновлень (900000 - 15 хв, 3600000 - 1 год) 
+setInterval(intervalFunc, 900000);// Перевірка наявності оновлень (900000 - 15 хв, 3600000 - 1 год) 
 
+//setInterval(intervalFunc, 5000); //Перевірка наявності оновлень (DEVELOP)
+//let isScheduledFarewell = true;
+//let dateOfFinishing=new Date(2018, 03, 15); //DEVELOP
+//let dateOfFinishing=new Date(2018, 05, 1);
 
 
   function getReplacements(GROUP, callback)
@@ -36,13 +41,16 @@ var bot = new TelegramBot(token, {polling: true});// Включить опрос
 
           let date=content.eq(0).text(); //Дата
           let day=content.eq(1).text(); //Чисельник\знаменник
+          let anouncementsTop=content.eq(2).text(); //Оголошення (за межами таблиці)
 
           let table=$('div.news-body > table > tbody').children(); //Заміни
 
           let anouncementsRaw=$('[colspan=6]'); //Всі оголошення
           let anouncements;
-          if(anouncementsRaw.length>0)anouncements="Оголошення:\n";
+          if(anouncementsRaw.length>0 || anouncementsTop.length>0)anouncements="Оголошення:\n";
           else anouncements="Оголошень немає\n";
+
+          anouncements+=anouncementsTop;
 
           for(let i=0;i<anouncementsRaw.length; i++)
           {
@@ -93,8 +101,16 @@ var bot = new TelegramBot(token, {polling: true});// Включить опрос
 
           let anouncementsRaw=anoun; //Всі оголошення
           let anouncements;
-          if(anouncementsRaw.length>0)anouncements="Оголошення:\n";
+          let anouncementsTop=content.eq(2).text(); //Оголошення (за межами таблиці)
+
+          let table=$('div.news-body > table > tbody').children(); //Заміни
+
+          let anouncementsRaw=$('[colspan=6]'); //Всі оголошення
+          let anouncements;
+          if(anouncementsRaw.length>0 || anouncementsTop.length>0)anouncements="Оголошення:\n";
           else anouncements="Оголошень немає\n";
+
+          anouncements+=anouncementsTop;
 
           for(let i=0;i<anouncementsRaw.length; i++)
           {
@@ -135,6 +151,22 @@ var bot = new TelegramBot(token, {polling: true});// Включить опрос
 
       function intervalFunc() //функція для таймера
       { 
+      	/*let today=new Date();
+      	if(isScheduledFarewell)
+      	{      		
+      		if(today.getDay()==dateOfFinishing.getDay() && today.getMonth()==dateOfFinishing.getMonth() && today.getFullYear()==dateOfFinishing.getFullYear())
+      		{
+      			console.log("true");
+      			farewell();
+      			isScheduledFarewell=false;
+      		}
+      	}
+      	else if(today.getDay()!=dateOfFinishing.getDay() || today.getMonth()!=dateOfFinishing.getMonth() || today.getFullYear()!=dateOfFinishing.getFullYear())
+      	{
+      		isScheduledFarewell=true;
+      	}*/
+
+
         let options = {
         reply_markup: JSON.stringify(
         {
@@ -326,4 +358,24 @@ var bot = new TelegramBot(token, {polling: true});// Включить опрос
         Group: group,
         Name: name
       });
+    }
+
+    function farewell()
+    {
+    	users.find({},function(err,doc) 
+        {
+            if (err) throw err;
+            let currentYear=(new Date()).getFullYear()-2000;
+            for(let i=0;i<doc.length;i++)
+                {
+                    bot.sendMessage(doc[i].id, "Кінець навчального року");
+                    let formatGroup=doc[i].Group.split('-');
+                    let number=parseInt(formatGroup[1].substr(0, 2));
+                    if((currentYear-number)>=4)
+                    {
+                    	bot.sendMessage(doc[i].id,"Випуск");
+                    	users.remove({ id:doc[i].id});
+                    } 
+                }
+            });
     }
