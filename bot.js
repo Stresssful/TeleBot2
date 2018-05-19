@@ -41,7 +41,8 @@ var bot = new TelegramBot(token, {polling: true});// Включить опрос
 
           let date=content.eq(0).text(); //Дата
           let day=content.eq(1).text(); //Чисельник\знаменник
-          let anouncementsTop=content.eq(2).text(); //Оголошення (за межами таблиці)
+          //let anouncementsTop=content.eq(2).text(); //Оголошення (за межами таблиці)
+          let anouncementsTop="";
 
           let table=$('div.news-body > table > tbody').children(); //Заміни
 
@@ -101,7 +102,8 @@ var bot = new TelegramBot(token, {polling: true});// Включить опрос
 
           let anouncementsRaw=anoun; //Всі оголошення
           let anouncements;
-          let anouncementsTop=content.eq(2).text(); //Оголошення (за межами таблиці)
+          //let anouncementsTop=content.eq(2).text(); //Оголошення (за межами таблиці)
+          let anouncementsTop="";
 
           if(anouncementsRaw.length>0 || anouncementsTop.length>0)anouncements="Оголошення:\n"+anouncementsTop;
           else anouncements="Оголошень немає\n";
