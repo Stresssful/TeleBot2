@@ -41,22 +41,22 @@ var bot = new TelegramBot(token, {polling: true});// Включить опрос
 
           let date=content.eq(0).text(); //Дата
           let day=content.eq(1).text(); //Чисельник\знаменник
-          //let anouncementsTop=content.eq(2).text(); //Оголошення (за межами таблиці)
-          let anouncementsTop="";
+          let anouncementsTop=$('div.news-body > p'); // Оголошення (за межами таблиці)
 
           let table=$('div.news-body > table > tbody').children(); //Заміни
 
-          let anouncementsRaw=$('[colspan=6]'); //Всі оголошення
+          let anouncementsRaw=$('[colspan=6]'); //Оголошення (в таблиці)
           let anouncements;
-          if(anouncementsRaw.length>0 || anouncementsTop.length>0)anouncements="Оголошення:\n";
+          if(anouncementsRaw.length>0 || anouncementsTop.length>2)anouncements="Оголошення:\n";
           else anouncements="Оголошень немає\n";
 
-          anouncements+=anouncementsTop;
+          if(anouncementsTop.length>2)
+          	for(let i=2;i<anouncementsTop.length;i++) //Перше оголошення за межами таблиці - 3 елемент р у елементі div.news-body
+	          	anouncements+=anouncementsTop.eq(i).text()+"\n"; 
 
           for(let i=0;i<anouncementsRaw.length; i++)
-          {
-            anouncements+="\t"+anouncementsRaw.eq(i).text()+"\n"; //Розбиття оголошень по рядках
-          }
+          	anouncements+="\t"+anouncementsRaw.eq(i).text()+"\n"; //Розбиття оголошень по рядках
+          
           let output=GROUP+":\n"+date+"\n"+day+"\n"+anouncements+"\n"+"Заміни:\n";
 
 
