@@ -100,18 +100,9 @@ var bot = new TelegramBot(token, {polling: true});// Включить опрос
 
           let table=tabl //Заміни
 
-          let anouncementsRaw=anoun; //Всі оголошення
-          let anouncements;
+          let anouncements=anoun;
           //let anouncementsTop=content.eq(2).text(); //Оголошення (за межами таблиці)
-          let anouncementsTop="";
-
-          if(anouncementsRaw.length>0 || anouncementsTop.length>0)anouncements="Оголошення:\n"+anouncementsTop;
-          else anouncements="Оголошень немає\n";
-
-          for(let i=0;i<anouncementsRaw.length; i++)
-          {
-            anouncements+="\t"+anouncementsRaw.eq(i).text()+"\n"; //Розбиття оголошень по рядках
-          }
+          
           let output=GROUP+":\n"+date+"\n"+day+"\n"+anouncements+"\n"+"Заміни:\n";
 
 
@@ -185,7 +176,21 @@ var bot = new TelegramBot(token, {polling: true});// Включить опрос
                 if(date!=lastUpdate) //Якщо дата не така як в БД
                 {
                   let tabl=$('div.news-body > table > tbody').children(); //Заміни
-                  let anoun=$('[colspan=6]'); //Всі оголошення
+
+                  let anouncementsTop=$('div.news-body > p'); // Оголошення (за межами таблиці)
+                  let anouncementsRaw=$('[colspan=6]'); //Оголошення (в таблиці)
+          		  let anouncements;
+          		  if(anouncementsRaw.length>0 || anouncementsTop.length>2)anouncements="Оголошення:\n";
+          			else anouncements="Оголошень немає\n";
+
+          		  if(anouncementsTop.length>2)
+          			for(let i=2;i<anouncementsTop.length;i++) //Перше оголошення за межами таблиці - 3 елемент р у елементі div.news-body
+	          			anouncements+=anouncementsTop.eq(i).text()+"\n"; 
+
+		          for(let i=0;i<anouncementsRaw.length; i++)
+		          	anouncements+="\t"+anouncementsRaw.eq(i).text()+"\n"; //Розбиття оголошень по рядках
+
+
                   update.remove({LastDate:lastUpdate}); //Записуєм дату в БД
                   update.insert(
                   {                
@@ -196,7 +201,7 @@ var bot = new TelegramBot(token, {polling: true});// Включить опрос
                       if (err) throw err;
                       for(let i=0;i<doc.length;i++)
                       {
-                        getReplacementsFromLoaded(content,tabl,anoun,function(err, msg){bot.sendMessage(doc[i].id, msg, options)},doc[i].Group)
+                        getReplacementsFromLoaded(content,tabl,anouncements,function(err, msg){bot.sendMessage(doc[i].id, msg, options)},doc[i].Group)
                       }
                   });
                 }
