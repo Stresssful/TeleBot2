@@ -2,22 +2,25 @@ var request = require('request');
 var cheerio = require('cheerio');
 var TelegramBot = require('node-telegram-bot-api');
 var monk = require('monk');
+var ON_DEATH = require('death');
+
 
 var   helpText='Привіт! Я бот, який може відслідковувати заміни для студентів ХПК. Просто напиши мені назву групи, про заміни якої ти хочеш дізнатись.';
       helpText+='\n\n';
       helpText+='Якщо ж ти хочеш отримувати повідомлення кожен раз, коли на сайті ХПК виходять заміни - натисни на кнопку "Відслідковувати групу".';
       helpText+='\n\n';
       helpText+='Також у мене є деякі команди:\n/my - Переглянути мої заміни;\n/remove - Не відслідковувати групу;\n/help - Переглянути це повідомлення з інструкцією.';
-      helpText+='\nЗ питаннями та пропозиціями звертатись до @EtherDrake.'
+      helpText+='\nЗ питаннями та пропозиціями звертатись до @Stressful_Courtier.'
 
-var token = '473584184:AAGQGkdSmbK_CaI9iy5mUURIMhb25MT20Aw'; // Устанавливаем токен
-var db = monk('ether:herokuDB@ds249025.mlab.com:49025/heroku_26kgq0gk'); //База даних
-setInterval(intervalFunc, 900000);// Перевірка наявності оновлень (900000 - 15 хв, 3600000 - 1 год) 
+//var token = '473584184:AAGQGkdSmbK_CaI9iy5mUURIMhb25MT20Aw'; // Устанавливаем токен
+//var db = monk('ether:herokuDB@ds249025.mlab.com:49025/heroku_26kgq0gk'); //База даних
+//setInterval(intervalFunc, 900000);// Перевірка наявності оновлень (900000 - 15 хв, 3600000 - 1 год) 
+
 
 //DEBUG OPTIONS
-//var token = '418440998:AAGpggVT2H3_4am1qZmwoNaQ5BEUS6-UEzg'; // Устанавливаем токен (DEVELOP)
-//var db = monk('main:root@ds161148.mlab.com:61148/heroku_tqh5hdjz'); //База даних (DEVELOP)
-//setInterval(intervalFunc, 5000); //Перевірка наявності оновлень (DEVELOP)
+var token = '418440998:AAGpggVT2H3_4am1qZmwoNaQ5BEUS6-UEzg'; // Устанавливаем токен (DEVELOP)
+var db = monk('main:root@ds161148.mlab.com:61148/heroku_tqh5hdjz'); //База даних (DEVELOP)
+setInterval(intervalFunc, 5000); //Перевірка наявності оновлень (DEVELOP)
 
 //UNDER CONSTRUCTION
 //let isScheduledFarewell = true;
@@ -27,7 +30,6 @@ setInterval(intervalFunc, 900000);// Перевірка наявності он�
 var users = db.get('users'); //таблиця користувачів
 var update = db.get('last_update'); //останній апдейт
 var bot = new TelegramBot(token, {polling: true});// Включить опрос сервера
-
 
   function getReplacements(GROUP, callback)
   {    	
