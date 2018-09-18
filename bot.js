@@ -16,7 +16,7 @@ var token = '473584184:AAGQGkdSmbK_CaI9iy5mUURIMhb25MT20Aw'; // Устанавл
 var db = monk('ether:herokuDB@ds249025.mlab.com:49025/heroku_26kgq0gk'); //База даних
 setInterval(intervalFunc, 900000);// Перевірка наявності оновлень (900000 - 15 хв, 3600000 - 1 год) 
 
-
+var admins=['Stressful_Courtier'];
 //DEBUG OPTIONS
 //var token = '418440998:AAGpggVT2H3_4am1qZmwoNaQ5BEUS6-UEzg'; // Устанавливаем токен (DEVELOP)
 //var db = monk('main:root@ds161148.mlab.com:61148/heroku_tqh5hdjz'); //База даних (DEVELOP)
@@ -275,6 +275,22 @@ var bot = new TelegramBot(token, {polling: true});// Включить опрос
       	if (err) throw err;
   		bot.sendMessage(fromId,"Нас вже "+count+"!");
 	  });
+    });
+
+    bot.onText(/^\/yell(.*|\n)*$/, function(msg, match) {
+      let fromId = msg.from.id;
+      if(admins.indexOf(msg.from.username) != -1 )
+      {
+        let text = msg.text.substr(5);
+        users.find({},function(err,doc) 
+        {
+          if (err) throw err;
+          for(let i=0;i<doc.length;i++) 
+          {            
+            bot.sendMessage(doc[i].id,text);
+          }
+        });
+      }
     });
 
     bot.on('callback_query', function (msg) { //обробка кнопок відслідкувати або переглянути заміну
