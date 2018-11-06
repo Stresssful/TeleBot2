@@ -21,6 +21,8 @@ setInterval(intervalFunc, 900000);// Перевірка наявності он�
 //var token = '418440998:AAGpggVT2H3_4am1qZmwoNaQ5BEUS6-UEzg'; // Устанавливаем токен (DEVELOP)
 //var db = monk('main:root@ds161148.mlab.com:61148/heroku_tqh5hdjz'); //База даних (DEVELOP)
 //setInterval(intervalFunc, 5000); //Перевірка наявності оновлень (DEVELOP)
+
+
 var admins=[310694905];
 
 //UNDER CONSTRUCTION
@@ -317,12 +319,16 @@ var bot = new TelegramBot(token, {polling: true});// Включить опрос
       let query = msg.data.split(':');
       let group = query[0];
       let action = query[1];
-      let fromId=msg.from.id;
+      let adminNotify="";
+
+      //console.log( msg.from.id);
 
       addToBase(msg.from.id, group, msg.from.username);
-      bot.sendMessage(fromId, "Ви відслідковуєте групу "+group+".");
+      bot.sendMessage(msg.from.id, "Ви відслідковуєте групу "+group+".");
 
-      let adminNotify = "Користувач підписався\n";
+
+
+      adminNotify += "Користувач підписався\n";
       adminNotify += msg.from.id +'\n';
       adminNotify += msg.from.username + ': ' + msg.from.first_name + ' ' + msg.from.last_name+'\n';
       adminNotify += "Група: " + group;
@@ -348,14 +354,16 @@ var bot = new TelegramBot(token, {polling: true});// Включить опрос
 
     function addToBase(telegramID, group, name) //Запис користувачів в БД
     {
-      users.remove({ id: telegramID });
+      //users.remove({ id: telegramID });
 
-      users.insert(
+      users.update(
+      { id: telegramID },
       { 
         id: telegramID, 
         Group: group,
         Name: name
-      });
+      },
+      { upsert: true });
     }
 
     function farewell()
