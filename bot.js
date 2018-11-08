@@ -12,14 +12,14 @@ var   helpText='Привіт! Я бот, який може відслідков�
       helpText+='Також у мене є деякі команди:\n/my - Переглянути мої заміни;\n/remove - Не відслідковувати групу;\n/help - Переглянути це повідомлення з інструкцією.';
       helpText+='\nЗ питаннями та пропозиціями звертатись до @Stressful_Courtier.'
 
-//var token = '473584184:AAGQGkdSmbK_CaI9iy5mUURIMhb25MT20Aw'; // Устанавливаем токен
-//var db = monk('ether:herokuDB@ds249025.mlab.com:49025/heroku_26kgq0gk'); //База даних
+var token = '473584184:AAGQGkdSmbK_CaI9iy5mUURIMhb25MT20Aw'; // Устанавливаем токен
+var db = monk('ether:herokuDB@ds249025.mlab.com:49025/heroku_26kgq0gk'); //База даних
 setInterval(intervalFunc, 900000);// Перевірка наявності оновлень (900000 - 15 хв, 3600000 - 1 год) 
 
 
 //DEBUG OPTIONS
-var token = '418440998:AAGpggVT2H3_4am1qZmwoNaQ5BEUS6-UEzg'; // Устанавливаем токен (DEVELOP)
-var db = monk('main:root@ds161148.mlab.com:61148/heroku_tqh5hdjz'); //База даних (DEVELOP)
+//var token = '418440998:AAGpggVT2H3_4am1qZmwoNaQ5BEUS6-UEzg'; // Устанавливаем токен (DEVELOP)
+//var db = monk('main:root@ds161148.mlab.com:61148/heroku_tqh5hdjz'); //База даних (DEVELOP)
 //setInterval(intervalFunc, 5000); //Перевірка наявності оновлень (DEVELOP)
 
 
