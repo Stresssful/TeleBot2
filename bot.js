@@ -215,7 +215,11 @@ var bot = new TelegramBot(token, {polling: true});// Включить опрос
                       if (err) throw err;
                       for(let i=0;i<doc.length;i++)
                       {
-                        getReplacementsFromLoaded(content,tabl,anouncements,function(err, msg){bot.sendMessage(doc[i].id, msg, options)},doc[i].Group)
+                        getReplacementsFromLoaded(content,
+                          tabl,
+                          anouncements,
+                          function(err, msg){bot.sendMessage(doc[i].id, msg, options).catch(err =>messageAdmin(doc[i].id+"\n"+doc[i].Name+"\n"+doc[i].Group))},
+                          doc[i].Group)
                       }
                   });
                 }
