@@ -218,9 +218,15 @@ var bot = new TelegramBot(token, {polling: true});// Включить опрос
                         getReplacementsFromLoaded(content,
                           tabl,
                           anouncements,
-                          function(err, msg){bot.sendMessage(doc[i].id, msg, options).catch(err =>messageAdmin(doc[i].id+"\n"+doc[i].Name+"\n"+doc[i].Group))},
+                          function(err, msg){bot.sendMessage(doc[i].id, msg, options).catch(err => users.remove({id:doc[i].id}) /*messageAdmin(doc[i].id+"\n"+doc[i].Name+"\n"+doc[i].Group)*/)},
                           doc[i].Group)
                       }
+                      users.count({}, function (err, count) 
+                      {
+                        if (err) throw err;
+                        var adminNotify = "Очистку завершено\n";
+                        messageAdmin(adminNotify);
+                      });
                   });
                 }
             });
