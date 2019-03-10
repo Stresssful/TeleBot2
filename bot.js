@@ -52,8 +52,10 @@ var bot = new TelegramBot(token, {polling: true});// Включить опрос
 
           let anouncementsRaw=$('[colspan=6]'); //Оголошення (в таблиці)
           let anouncements8=$('[colspan=8]');
+          let anouncements7=$('[colspan=7]');
+
           let anouncements;
-          if(anouncementsRaw.length>0 || anouncements8.length>0 || anouncementsTop.length>2)anouncements="Оголошення:\n";
+          if(anouncementsRaw.length>0 || anouncements8.length>0 || anouncements7.length>0 || anouncementsTop.length>2)anouncements="Оголошення:\n";
           else anouncements="Оголошень немає\n";
 
           if(anouncementsTop.length>2)
@@ -65,6 +67,9 @@ var bot = new TelegramBot(token, {polling: true});// Включить опрос
 
           for(let i=0;i<anouncements8.length; i++)
             anouncements+="\t"+anouncements8.eq(i).text()+"\n";
+
+          for(let i=0;i<anouncements7.length; i++)
+            anouncements+="\t"+anouncements7.eq(i).text()+"\n";
           
           let output=GROUP+":\n"+date+"\n"+day+"\n"+anouncements+"\n"+"Заміни:\n";
 
@@ -190,8 +195,9 @@ var bot = new TelegramBot(token, {polling: true});// Включить опрос
                   let anouncementsTop=$('div.news-body > p'); // Оголошення (за межами таблиці)
                   let anouncementsRaw=$('[colspan=6]'); //Оголошення (в таблиці)
                   let anouncements8=$('[colspan=8]');
+                  let anouncements7=$('[colspan=7]');
           		  let anouncements;
-          		  if(anouncementsRaw.length>0 || anouncements8.length>0 || anouncementsTop.length>2)anouncements="Оголошення:\n";
+          		  if(anouncementsRaw.length>0 || anouncements8.length>0 || anouncements7.length>0 || anouncementsTop.length>2)anouncements="Оголошення:\n";
           			else anouncements="Оголошень немає\n";
 
           		  if(anouncementsTop.length>2)
@@ -203,6 +209,8 @@ var bot = new TelegramBot(token, {polling: true});// Включить опрос
 
                 for(let i=0;i<anouncements8.length; i++)
                   anouncements+="\t"+anouncements8.eq(i).text()+"\n";
+                for(let i=0;i<anouncements7.length; i++)
+                  anouncements+="\t"+anouncements7.eq(i).text()+"\n";
 
 
                   update.remove({LastDate:lastUpdate}); //Записуєм дату в БД
