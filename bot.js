@@ -88,16 +88,21 @@ var bot = new TelegramBot(token, {polling: true});// Включить опрос
             if(group.includes("-")) //Якщо клітинка з групою не порожня -- там буде -
             {
               prevGroup=group;
-              if(group.includes(formattedGroup[0]) && group.includes(formattedGroup[1]))
+              if(group.includes(GROUP) 
+                || (group.includes(formattedGroup[0]) && group.includes("," + formattedGroup[1])) 
+                || ((group.includes(formattedGroup[0]) && group.includes(", " + formattedGroup[1])))) 
+                {
+                  output+="\t"+pair+"\t"+subject+"\t\t"+teacher+"\t"+room+"\n";
+                  empty=false;
+                }         
+            }
+            else if(!group.includes("-"))
+              if(prevGroup.includes(GROUP) 
+              || (prevGroup.includes(formattedGroup[0]) && prevGroup.includes("," + formattedGroup[1]))
+              || (prevGroup.includes(formattedGroup[0]) && prevGroup.includes(", " + formattedGroup[1])))       
               {
                 output+="\t"+pair+"\t"+subject+"\t\t"+teacher+"\t"+room+"\n";
-                empty=false;
               }         
-            }
-            else if(!group.includes("-") && prevGroup.includes(formattedGroup[0]) && prevGroup.includes(formattedGroup[1]))         
-            {
-              output+="\t"+pair+"\t"+subject+"\t\t"+teacher+"\t"+room+"\n";
-            }         
           }
           
           if(empty) output+="Замін немає";
@@ -135,16 +140,21 @@ var bot = new TelegramBot(token, {polling: true});// Включить опрос
             if(group.includes("-")) //Якщо клітинка з групою не порожня -- там буде -
             {
               prevGroup=group;
-              if(group.includes(formattedGroup[0]) && group.includes(formattedGroup[1]))
+              if(group.includes(GROUP) 
+                || (group.includes(formattedGroup[0]) && group.includes("," + formattedGroup[1])) 
+                || ((group.includes(formattedGroup[0]) && group.includes(", " + formattedGroup[1])))) 
+                {
+                  output+="\t"+pair+"\t"+subject+"\t\t"+teacher+"\t"+room+"\n";
+                  empty=false;
+                }         
+            }
+            else if(!group.includes("-"))
+              if(prevGroup.includes(GROUP) 
+              || (prevGroup.includes(formattedGroup[0]) && prevGroup.includes("," + formattedGroup[1]))
+              || (prevGroup.includes(formattedGroup[0]) && prevGroup.includes(", " + formattedGroup[1])))       
               {
                 output+="\t"+pair+"\t"+subject+"\t\t"+teacher+"\t"+room+"\n";
-                empty=false;
-              }         
-            }
-            else if(!group.includes("-") && prevGroup.includes(formattedGroup[0]) && prevGroup.includes(formattedGroup[1]))         
-            {
-              output+="\t"+pair+"\t"+subject+"\t\t"+teacher+"\t"+room+"\n";
-            }         
+              }          
           }
           
         if(empty) output+="Замін немає";
