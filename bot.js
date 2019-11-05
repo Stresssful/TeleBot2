@@ -198,13 +198,12 @@ var bot = new TelegramBot(token, {polling: true});// Включить опрос
                 let content=$('div.news-body').children();          
 
                 let date=content.eq(0).text(); //Дата
-                if(isEmpty(date))
-                {
-                  date=content.eq(1).text();
-                }
-                if(date!=lastUpdate) //Якщо дата не така як в БД
+                let newUpdate = content.text().substring(0,128);
+                
+                if(newUpdate!=lastUpdate) //Якщо дата не така як в БД
                 {
                   let tabl=$('div.news-body > table > tbody').children(); //Заміни
+                  console.log(newUpdate);
 
                   let anouncementsTop=$('div.news-body > p'); // Оголошення (за межами таблиці)
                   let anouncementsRaw=$('[colspan=6]'); //Оголошення (в таблиці)
@@ -230,7 +229,7 @@ var bot = new TelegramBot(token, {polling: true});// Включить опрос
                   update.remove({LastDate:lastUpdate}); //Записуєм дату в БД
                   update.insert(
                   {                
-                    LastDate: date
+                    LastDate: newUpdate
                   });
                   users.find({},function(err,doc) 
                   {
@@ -250,6 +249,10 @@ var bot = new TelegramBot(token, {polling: true});// Включить опрос
                         messageAdmin(adminNotify);
                       });
                   });
+                }
+                else
+                {
+                  console.log("Same");
                 }
             });
         });
