@@ -198,6 +198,10 @@ var bot = new TelegramBot(token, {polling: true});// Включить опрос
                 let content=$('div.news-body').children();          
 
                 let date=content.eq(0).text(); //Дата
+                if(isEmpty(date))
+                {
+                  date=content.eq(1).text();
+                }
                 if(date!=lastUpdate) //Якщо дата не така як в БД
                 {
                   let tabl=$('div.news-body > table > tbody').children(); //Заміни
@@ -428,4 +432,8 @@ var bot = new TelegramBot(token, {polling: true});// Включить опрос
                 } 
             }
         });
+    }
+
+    function isEmpty(str) {
+      return (!str || 0 === str.length);
     }
