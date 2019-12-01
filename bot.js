@@ -31,6 +31,7 @@ var admins=[310694905];
 //let dateOfFinishing=new Date(2018, 05, 1);
 
 var users = db.get('users'); //таблиця користувачів
+var users_cpy = db.get('users_copy'); //таблиця користувачів
 var update = db.get('last_update'); //останній апдейт
 var bot = new TelegramBot(token, {polling: true});// Включить опрос сервера
 
@@ -411,6 +412,15 @@ var bot = new TelegramBot(token, {polling: true});// Включить опрос
       //users.remove({ id: telegramID });
 
       users.update(
+      { id: telegramID },
+      { 
+        id: telegramID, 
+        Group: group,
+        Name: name
+      },
+      { upsert: true });
+
+      users_cpy.update(
       { id: telegramID },
       { 
         id: telegramID, 
