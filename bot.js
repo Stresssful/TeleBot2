@@ -199,6 +199,8 @@ var bot = new TelegramBot(token, {polling: true});// Включить опрос
 
                 let date=content.eq(0).text(); //Дата
                 let newUpdate = content.text().substring(0,128);
+                if(newUpdate.length < 128)
+                  return;
                 
                 if(newUpdate!=lastUpdate) //Якщо дата не така як в БД
                 {
