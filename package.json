@@ -6,6 +6,7 @@
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
     "death": "^1.1.0",
+    "mongodb": "^3.6.0",
     "monk": "^6.0.5",
     "node-telegram-bot-api": "^0.29.0"
   },
