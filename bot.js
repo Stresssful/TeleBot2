@@ -1,4 +1,5 @@
 // <-------Requires------->
+require('dotenv').config(); 
 var request = require('request');
 var cheerio = require('cheerio');
 var TelegramBot = require('node-telegram-bot-api');
@@ -25,7 +26,7 @@ const usersCopyCollectionName = "Users_cpy";
 
 const admins=[310694905];
 
-const token = '473584184:AAGQGkdSmbK_CaI9iy5mUURIMhb25MT20Aw';
+const token = process.env.TOKEN;
 //const token = '418440998:AAGpggVT2H3_4am1qZmwoNaQ5BEUS6-UEzg';    //DEBUG TOKEN
 
 
